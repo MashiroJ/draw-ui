@@ -4,6 +4,7 @@
         background-color="#545c64"
         text-color="#fff"
         :collapse="isCollapse"
+        :collapse-transition="false"
         >
             <h3 v-show="!isCollapse">Draw-Ai后台管理</h3>
             <h3 v-show="isCollapse">Draw</h3>

@@ -13,7 +13,7 @@ import CommonHeader from '@/components/CommonHeader.vue'
                 </el-header>
                 <!-- <common-tags/> -->
                 <el-main class="right-main">
-                    <router-view></router-view>
+                    <router-view/>
                 </el-main>
             </el-container>
         </el-container>
