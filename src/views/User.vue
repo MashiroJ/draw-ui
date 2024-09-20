@@ -1,5 +1,6 @@
 <script setup>
 import {getCurrentInstance, onMounted, reactive, ref} from 'vue';
+import {ElMessage,ElMessageBox} from 'element-plus'
 
 const {proxy} = getCurrentInstance();
 
@@ -37,7 +38,6 @@ const taleLabel = reactive([
     width: '400',
   },
 ]);
-
 const fromInline = reactive({
   keyWord: ''
 })
@@ -47,6 +47,7 @@ const config = reactive({
   page: '1',
   size: '1'
 })
+
 const handleSearch = () => {
   config.name = fromInline.keyWord
   getUserData()
@@ -55,10 +56,21 @@ const handleSizeChange = (size) => {
   config.size = size
   getUserData()
 }
-
 const handleCurrentChange = (page) => {
   config.page = page
   getUserData()
+}
+const handleDelete = (val)=>{
+  ElMessageBox.confirm("是否删除该用户？").then(async ()=>{
+    await proxy.$api.deleteUser({id:val.id});
+    ElMessage({
+      showClose: true,
+      message: '删除成功',
+      type: 'success'
+    })
+    getUserData()
+  })
+
 }
 
 onMounted(() => {
@@ -90,11 +102,11 @@ onMounted(() => {
           :label="item.label"
           :width="item.width ? item.width : 125"/>
       <el-table-column fixed="right" label="选项" min-width="120">
-        <template #default>
+        <template #="scope">
           <el-button type="success" size="small" @click="handleClick">
             修改
           </el-button>
-          <el-button type="danger" size="small">删除</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
