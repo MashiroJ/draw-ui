@@ -1,6 +1,6 @@
 <script setup>
-import {getCurrentInstance, onMounted, reactive, ref} from 'vue';
-import {ElMessage, ElMessageBox} from 'element-plus'
+import {ref, getCurrentInstance, onMounted, reactive, nextTick} from "vue";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 const {proxy} = getCurrentInstance();
 
@@ -52,6 +52,7 @@ const handleSearch = () => {
   config.name = fromInline.keyWord
   getUserData()
 }
+
 const handleSizeChange = (size) => {
   config.size = size
   getUserData()
@@ -66,8 +67,7 @@ const action = ref("add")
 //控制对话框是否显示
 const dialogVisible = ref(false)
 // 新增的表单数据
-const formUser = reactive({
-})
+const formUser = reactive({})
 //表单校验规则
 const rules = reactive({
   name: [{required: true, message: "姓名是必填项", trigger: "blur"}],
@@ -108,12 +108,15 @@ const timeFormat = (time) => {
   var year = time.getFullYear();
   var month = time.getMonth() + 1;
   var date = time.getDate();
+
   function add(m) {
     return m < 10 ? "0" + m : m;
   }
+
   return year + "-" + add(month) + "-" + add(date);
 }
 
+// 表单提交事件
 const onSubmit = () => {
   //执行userForm表单的validate进行规则校验，传入一个回调函数，回调函数会接受到一个是否校验通过的变量
   proxy.$refs["userForm"].validate(async (valid) => {
@@ -124,13 +127,12 @@ const onSubmit = () => {
       let res = null
       //这里无论是新增或者是编辑，我们都要对这个日期进行一个格式化
       //如果不是1997-01-02这种格式，使用timeFormat方法进行格式化
-      formUser.birth=/^\d{4}-\d{2}-\d{2}$/.test(formUser.birth) ? formUser.birth : timeFormat(formUser.birth)
+      formUser.birth = /^\d{4}-\d{2}-\d{2}$/.test(formUser.birth) ? formUser.birth : timeFormat(formUser.birth)
       //如果当前的操作是新增，则调用新增接口
       if (action.value == "add") {
         res = await proxy.$api.addUser(formUser);
-      } else if (action.value == "edit") {
-        //在之前的onSubmit方法中增加的代码
-        //如果是编辑
+      } //如果当前的操作是编辑，则调用编辑接口
+      else if (action.value == "edit") {
         res = await proxy.$api.editUser(formUser)
       }
       //如果接口调用成功
@@ -152,6 +154,21 @@ const onSubmit = () => {
   })
 }
 
+// 编辑按钮点击事件
+const handleEdit = (value) => {
+  action.value = "edit"
+  dialogVisible.value = true
+
+  nextTick(() => {
+    //因为在第一次显示弹窗的时候form组件没有加载出来，如果直接对formUser赋值，这个值会作为form表单的初始值
+    //所以使用nextTick，赋值的操作在一个微任务中，这样就可以避免在from表单加载之前赋值
+
+    Object.assign(formUser, {...value, sex: "" + value.sex})
+    //这里需要改变sex数据类型，是因为el-option的value有类型的校验
+  })
+}
+
+// 删除按钮点击事件
 const handleDelete = (val) => {
   ElMessageBox.confirm("是否删除该用户？").then(async () => {
     await proxy.$api.deleteUser({id: val.id});
@@ -162,7 +179,6 @@ const handleDelete = (val) => {
     })
     getUserData()
   })
-
 }
 
 onMounted(() => {
@@ -195,9 +211,7 @@ onMounted(() => {
           :width="item.width ? item.width : 125"/>
       <el-table-column fixed="right" label="选项" min-width="120">
         <template #="scope">
-          <el-button type="success" size="small" @click="handleClick">
-            修改
-          </el-button>
+          <el-button type="success" size="small" @click="handleEdit(scope.row)">修改</el-button>
           <el-button type="danger" size="small" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -217,9 +231,7 @@ onMounted(() => {
       width="35%"
       :before-close="handleClose"
   >
-    <!--需要注意的是设置了:inline="true"，
- 会对el-select的样式造成影响，我们通过给他设置一个class=select-clearn
- 在css进行处理-->
+    <!--需要注意的是设置了:inline="true"，会对el-select的样式造成影响，我们通过给他设置一个class=select-clearn在css进行处理-->
     <el-form :inline="true" :model="formUser" :rules="rules" ref="userForm">
       <el-row>
         <el-col :span="12">
