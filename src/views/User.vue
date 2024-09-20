@@ -65,11 +65,8 @@ const handleCurrentChange = (page) => {
 const action = ref("add")
 //控制对话框是否显示
 const dialogVisible = ref(false)
-
+// 新增的表单数据
 const formUser = reactive({
-  name: 'test',
-  sex: '1',
-
 })
 //表单校验规则
 const rules = reactive({
