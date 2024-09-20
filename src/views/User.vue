@@ -9,7 +9,7 @@ const getUserData = async () => {
   const data = await proxy.$api.getUserData(config);
   tableData.value = data.list.map(item => ({
     ...item,
-    sex: item.sex === 1 ? '男' : '女'
+    sex: item.sex === '1' ? '男' : '女'
   }))
   config.total = data.count
   config.size = data.size
@@ -105,6 +105,18 @@ const handleCancel = () => {
   dialogVisible.value = false
 }
 
+//格式化日期，格式化为：1997-01-02这种
+const timeFormat = (time) => {
+  var time = new Date(time);
+  var year = time.getFullYear();
+  var month = time.getMonth() + 1;
+  var date = time.getDate();
+  function add(m) {
+    return m < 10 ? "0" + m : m;
+  }
+  return year + "-" + add(month) + "-" + add(date);
+}
+
 const onSubmit = () => {
   //执行userForm表单的validate进行规则校验，传入一个回调函数，回调函数会接受到一个是否校验通过的变量
   proxy.$refs["userForm"].validate(async (valid) => {
@@ -113,6 +125,9 @@ const onSubmit = () => {
     if (valid) {
       //res用于接收添加用户或者编辑用户接口的返回值
       let res = null
+      //这里无论是新增或者是编辑，我们都要对这个日期进行一个格式化
+      //如果不是1997-01-02这种格式，使用timeFormat方法进行格式化
+      formUser.birth=/^\d{4}-\d{2}-\d{2}$/.test(formUser.birth) ? formUser.birth : timeFormat(formUser.birth)
       //如果当前的操作是新增，则调用新增接口
       if (action.value == "add") {
         res = await proxy.$api.addUser(formUser);
@@ -138,20 +153,6 @@ const onSubmit = () => {
     }
 
   })
-}
-
-//格式化日期，格式化为：1997-01-02这种
-const timeFormat = (time) => {
-  var time = new Date(time);
-  var year = time.getFullYear();
-  var month = time.getMonth() + 1;
-  var date = time.getDate();
-
-  function add(m) {
-    return m < 10 ? "0" + m : m;
-  }
-
-  return year + "-" + add(month) + "-" + add(date);
 }
 
 const handleDelete = (val) => {
@@ -251,7 +252,6 @@ onMounted(() => {
                 type="date"
                 placeholder="请输入"
                 style="width: 100%"
-                value-format="yyyy-MM-dd"
             />
           </el-form-item>
         </el-col>

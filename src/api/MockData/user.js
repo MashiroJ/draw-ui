@@ -34,15 +34,15 @@ for (let i = 0; i < count; i++) {
 
 
 export default {
-	//   /**
-	//    * 获取列表
-	//    * 要带参数 name, page, limt; name可以不填, page,limit有默认值。
-	//    * @param name, page, limit
-	//    * @return {{code: number, count: number, data: *[]}}
-	//    */
+	/**
+	 * 获取列表
+	 * 要带参数 name, page, limt; name可以不填, page,limit有默认值。
+	 * @param name, page, limit
+	 * @return {{code: number, count: number, data: *[]}}
+	 */
 	getUserList: config => {
 		//limit默认是10，因为分页器默认也是一页10个
-		const { name, page = 1, limit = 10 } = param2Obj(config.url)
+		const {name, page = 1, limit = 10} = param2Obj(config.url)
 		
 		const mockList = List.filter(user => {
 			//如果name存在会，根据name筛选数据
@@ -60,13 +60,13 @@ export default {
 		}
 		
 	},
-	   /**
-	   * 删除用户
-	   * @param id
-	   * @return {*}
-	   */
+	/**
+	 * 删除用户
+	 * @param id
+	 * @return {*}
+	 */
 	deleteUser: config => {
-		const { id } = param2Obj(config.url)
+		const {id} = param2Obj(config.url)
 		
 		if (!id) {
 			return {
@@ -81,8 +81,13 @@ export default {
 			}
 		}
 	},
+	/**
+	 * 新增用户
+	 * @param config
+	 * @returns {{code: number, data: {message: string}}}
+	 */
 	createUser: config => {
-		const { name, addr, age, birth, sex } = JSON.parse(config.body)
+		const {name, addr, age, birth, sex} = JSON.parse(config.body)
 		List.unshift({
 			id: Mock.Random.guid(),
 			name: name,
@@ -98,13 +103,13 @@ export default {
 			}
 		}
 	},
-	    /**
-	   * 修改用户
-	   * @param id, name, addr, age, birth, sex
-	   * @return {{code: number, data: {message: string}}}
-	   */
+	/**
+	 * 修改用户
+	 * @param id, name, addr, age, birth, sex
+	 * @return {{code: number, data: {message: string}}}
+	 */
 	updateUser: config => {
-		const { id, name, addr, age, birth, sex } = JSON.parse(config.body)
+		const {id, name, addr, age, birth, sex} = JSON.parse(config.body)
 		const sex_num = parseInt(sex)
 		List.some(u => {
 			if (u.id === id) {
