@@ -13,8 +13,8 @@ function initState() {
 			}
 		],
 		currentMenu: null,
-		// menulist: [],
-		// token: "",
+		menulist: [],
+		token: "",
 		// routerList: [],
 	}
 }

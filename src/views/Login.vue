@@ -1,15 +1,25 @@
 <script setup>  
-import { reactive } from 'vue'  
+import { reactive,getCurrentInstance } from 'vue'
+import {useAllDataStore} from '@/stores'
+import { useRouter } from 'vue-router'
+
+
+const { proxy } = getCurrentInstance();
+const store = useAllDataStore()
+const router = useRouter()
 // 登录表单数据  
 const formLogin = reactive({  
   username: '',  
   password: ''  
-})  
+})
 
   // 提交逻辑  
-const onSubmit = () => {  
-
-  console.log('登录信息:', formLogin);  
+const onSubmit = async () => {  
+  const res = await proxy.$api.getMenu(formLogin)
+  console.log(res)
+  store.updateMenuList(res.menuList)  
+  store.state.token=res.token
+  router.push('/home')
 }  
 
 
@@ -26,7 +36,7 @@ const onSubmit = () => {
         <el-input type="password" placeholder="请输入密码" v-model="formLogin.password"></el-input>  
       </el-form-item>  
       <el-form-item> 
-        <el-button type="success" round="onSubmit" size="large">登陆</el-button>
+        <el-button type="success" round size="large" @click="onSubmit">登陆</el-button>
       </el-form-item>  
     </el-form>  
   </div>  

@@ -1,6 +1,7 @@
 import Mock from 'mockjs'
 import homeApi from './MockData/home'
 import userApi from './MockData/user'
+import menuApi from './MockData/permission'
 
 //1,拦截路径，2，方法，3，制造数据
 Mock.mock(/api\/home\/getTableData/,'get',homeApi.getTableData);
@@ -10,4 +11,4 @@ Mock.mock(/user\/getUserData/,"get", userApi.getUserList);
 Mock.mock(/user\/deleteUser/,"get", userApi.deleteUser);
 Mock.mock(/user\/addUser/,"post", userApi.createUser);
 Mock.mock(/user\/editUser/, "post",userApi.updateUser);
-// Mock.mock(/permission\/getMenu/, "post",menuApi.getMenu);
+Mock.mock(/permission\/getMenu/, "post",menuApi.getMenu);
