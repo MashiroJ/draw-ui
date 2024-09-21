@@ -43,9 +43,9 @@ const fromInline = reactive({
 })
 const config = reactive({
   name: '',
-  total: 0,
-  page: '1',
-  size: '1'
+  // total: 0,
+  // page: '1',
+  // size: '1'
 })
 
 const handleSearch = () => {

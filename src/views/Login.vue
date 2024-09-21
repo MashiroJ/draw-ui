@@ -19,6 +19,7 @@ const onSubmit = async () => {
   console.log(res)
   store.updateMenuList(res.menuList)  
   store.state.token=res.token
+  store.addMenu(router)
   router.push('/home')
 }  
 
