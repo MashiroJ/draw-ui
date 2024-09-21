@@ -7,6 +7,8 @@
             </el-button>
             <el-breadcrumb separator="/" class="bread">
                 <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                <!-- 面包屑实现 -->
+                <el-breadcrumb-item v-if="current" :to="current.path">{{current.label}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <!--右侧下拉菜单 -->
@@ -27,7 +29,7 @@
 </template>
 
 <script setup>
-// import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useAllDataStore } from '@/stores'
 import { useRouter } from 'vue-router'
 const store = useAllDataStore()
@@ -43,6 +45,8 @@ const handleLoginOut=()=>{
     store.clean()
     router.push('/login')
 }
+
+const current = computed(()=>store.state.currentMenu)
 
 </script>
 
