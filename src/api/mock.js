@@ -2,7 +2,6 @@ import Mock from 'mockjs'
 import homeApi from './MockData/home'
 import userApi from './MockData/user'
 import menuApi from './MockData/permission'
-import roleApi from './MockData/role'
 
 
 //1,拦截路径，2，方法，3，制造数据
@@ -13,8 +12,4 @@ Mock.mock(/user\/getUserData/,"get", userApi.getUserList);
 Mock.mock(/user\/deleteUser/,"get", userApi.deleteUser);
 Mock.mock(/user\/addUser/,"post", userApi.createUser);
 Mock.mock(/user\/editUser/, "post",userApi.updateUser);
-Mock.mock(/role\/getRoleData/,"get", roleApi.getRoleData);
-Mock.mock(/role\/addRole/,"post", roleApi.addRole);
-Mock.mock(/role\/editRole/,"post", roleApi.editRole);
-Mock.mock(/role\/deleteRole/,"get", roleApi.deleteRole);
 Mock.mock(/permission\/getMenu/, "post",menuApi.getMenu);
